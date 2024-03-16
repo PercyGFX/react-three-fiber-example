@@ -1,19 +1,21 @@
-import React, { Suspense } from "react";
-import { Canvas, useLoader } from "@react-three/fiber";
+import React, { Suspense, useRef } from "react";
+import { Canvas, useLoader, useFrame } from "@react-three/fiber";
 import { Box, OrbitControls, Stars } from "@react-three/drei";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 function Model() {
   const gltf = useLoader(GLTFLoader, "/scene.gltf");
+  const group = useRef();
 
-  // Traverse through the model's children and set the color of each mesh
-  gltf.scene.traverse((child) => {
-    if (child.isMesh) {
-      child.material.color.set("#ff0000"); // Set color to red
-    }
+  useFrame(() => {
+    group.current.rotation.y += 0.01; // Adjust the rotation speed as needed
   });
 
-  return <primitive object={gltf.scene} />;
+  return (
+    <group ref={group}>
+      <primitive object={gltf.scene} />
+    </group>
+  );
 }
 
 function App() {
